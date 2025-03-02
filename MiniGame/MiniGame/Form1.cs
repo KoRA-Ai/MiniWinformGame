@@ -6,6 +6,7 @@ using GameLogic.Characters;
 using GameLogic.ResourceManagement;
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -21,10 +22,15 @@ namespace MiniGame
         public Form1()
         {
             InitializeComponent();
-            initConfiguration = new GameConfiguration(5, 200, 5, 5);
+            btnSetting.Click += BtnSetting_Click;
+            lbAllyList.Text = lbEnemyList.Text = string.Empty;
+            //hpAlly.Value = 10;
+
+            initConfiguration = new GameConfiguration(5, 100, 10, 5);
             resourceManager = new ResourceManager(initConfiguration);
             characterManager = new CharacterManager(initConfiguration, resourceManager);
             battaleSystem = new BattleSystem(characterManager.GetAllInGameCharacters(), initConfiguration.InitialEnemyCount);
+            SetEnemyCharacterUI();
 
             foreach (AllyCharacter.AllyTypes value in Enum.GetValues(typeof(AllyCharacter.AllyTypes)))
             {
@@ -35,40 +41,55 @@ namespace MiniGame
                 button.BackColor = Color.White;
                 button.Size = new System.Drawing.Size(100, 60);
 
-                #region hide
-
-                //Action<AllyCharacter.AllyTypes> recruitAct = (AllyCharacter.AllyTypes type) =>
-                //{
-                //    switch (value)
-                //    {
-                //        case AllyCharacter.AllyTypes.Farmer:
-                //            characterManager.HireCharacter(new Farmer(), ref part1Msg);
-                //            break;
-
-                //        case AllyCharacter.AllyTypes.Builder:
-                //            characterManager.HireCharacter(new Builder(), ref part1Msg);
-                //            break;
-
-                //        case AllyCharacter.AllyTypes.Soldier:
-                //            characterManager.HireCharacter(new Soldier(), ref part1Msg);
-                //            break;
-
-                //        default:
-                //            throw new ArgumentNullException();
-                //    }
-                //};
-
-                //button.Click += (s, e) => recruitAct(value);
-
-                #endregion hide
-
                 button.Click += (s, e) =>
                 {
                     characterManager.HireCharacter(value, ref part1Msg);
+
                     UpdateAllyCount();
+                    SetAllyCharacterUI();
                 };
                 pnlRecruitCharacters.Controls.Add(button);
             }
+        }
+
+        private void BtnSetting_Click(object sender, EventArgs e)
+        {
+            FormSetting frm = new FormSetting();
+            frm.UpdateSetting(initConfiguration);
+            frm.Show();
+            frm.FormClosed += (s, _) =>
+            {
+                initConfiguration = new GameConfiguration(frm.enemyCount, frm.foodCount, frm.bedCount, frm.maxCharCount);
+            };
+        }
+
+        private void SetAllyCharacterUI()
+        {
+            string text = string.Empty;
+            for (int i = 0; i < characterManager.GetFarmersCount(); i++)
+            {
+                text += "農";
+            }
+            for (int i = 0; i < characterManager.GetBuildersCount(); i++)
+            {
+                text += "建";
+            }
+            for (int i = 0; i < characterManager.GetSoldiersCount(); i++)
+            {
+                text += "鬥";
+            }
+            lbAllyList.Text = text;
+        }
+
+        private void SetEnemyCharacterUI()
+        {
+            string text = string.Empty;
+            for (int i = 0; i < battaleSystem.GetEnemyCount(); i++)
+            {
+                text += "敵";
+            }
+
+            lbEnemyList.Text = text;
         }
 
         private void UpdateAllyCount()
