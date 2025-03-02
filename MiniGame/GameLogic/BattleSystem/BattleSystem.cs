@@ -34,7 +34,7 @@ namespace GameLogic.BattleSystem
         public void Fight_Async()
         {
             Console.WriteLine("戰鬥開始");
-            foreach (var ally in _allies.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower))
+            foreach (var ally in _allies.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite))
             {
                 foreach (var enemy in _enemies.Where(e => !e.IsDead))
                 {
@@ -58,6 +58,11 @@ namespace GameLogic.BattleSystem
                     ally.TakeDamage(enemy.AttackPower);
                 }
             }
+        }
+
+        public int GetEnemyCount()
+        {
+            return _enemies.Count();
         }
     }
 }

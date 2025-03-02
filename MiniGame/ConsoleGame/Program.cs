@@ -26,11 +26,13 @@ namespace ConsoleGame
             Console.WriteLine("敵人數量: " + initConfiguration.InitialEnemyCount);
             //! 招募
             StringBuilder part1Msg = new StringBuilder();
-            characterManager.HireCharacter(new Farmer(), ref part1Msg);
-            characterManager.HireCharacter(new Farmer(), ref part1Msg);
-            characterManager.HireCharacter(new Soldier(), ref part1Msg);
-            characterManager.HireCharacter(new Soldier(), ref part1Msg);
             characterManager.HireCharacter(new Builder(), ref part1Msg);
+            characterManager.HireCharacter(new Builder(), ref part1Msg);
+            characterManager.HireCharacter(new Farmer(), ref part1Msg);
+            characterManager.HireCharacter(new Farmer(), ref part1Msg);
+            characterManager.HireCharacter(new Soldier(), ref part1Msg);
+            //characterManager.HireCharacter(new Soldier(), ref part1Msg);
+
             //characterManager.HireCharacter(new Farmer(), ref part1Msg);
             Console.WriteLine(part1Msg);
 
