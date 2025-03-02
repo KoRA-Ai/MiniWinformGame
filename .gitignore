@@ -399,4 +399,6 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
-!\MiniGame\MiniGame\bin/*
+!\MiniGame\MiniGame\bin\*
+!\MiniGame\ConsoleGame\bin\*
+ 
