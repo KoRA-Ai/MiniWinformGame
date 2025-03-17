@@ -2,6 +2,7 @@
 using DataManagement;
 using GameLogic.Characters;
 using System;
+using System.Resources;
 
 namespace GameLogic.ResourceManagement
 {
@@ -66,6 +67,11 @@ namespace GameLogic.ResourceManagement
         public enum CheckResourceType
         {
             CheckBed, CheckFood, CheckAll
+        }
+
+        public static implicit operator System.Resources.ResourceManager(ResourceManager v)
+        {
+            throw new NotImplementedException();
         }
     }
 }

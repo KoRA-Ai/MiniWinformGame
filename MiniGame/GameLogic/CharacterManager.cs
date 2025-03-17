@@ -27,6 +27,37 @@ namespace GameLogic
 
         #region 增減角色
 
+        public bool CheckHireRules(List<AllyCharacter> characterList, out string output)
+        {
+            bool result = true;
+
+            StringBuilder sb = new StringBuilder();
+            bool isOverLimit = false;
+            if (characterList.Count >= MaxCharacterCount)
+            {
+                sb.AppendLine(" 超過場上人數上限");
+                isOverLimit = true;
+            }
+
+            int fee = 0;
+            int bed = 0;
+            foreach (var ch in characterList)
+            {
+                fee += ch.Appetite * 2;//招募成本
+                bed += ch.BedCount; ;
+            }
+            bool isEnoughFood = (_resourceManager.TotalFoods - fee >= 0 ? true : false);
+            sb.AppendLine($"所需食物數量: {fee}" + (isEnoughFood ? "" : "-->食物不足"));
+
+            bool isEnoughBed = (_resourceManager.EmptyBeds - bed >= 0 ? true : false);
+            sb.AppendLine($"所需床位數量: {bed}" + (isEnoughBed ? "" : "-->床位不足"));
+
+            result = !isOverLimit && isEnoughFood && isEnoughBed;
+
+            output = sb.ToString();
+            return result;
+        }
+
         public void HireCharacter(AllyCharacter character, ref StringBuilder errMsg)
         {
             int fee = character.Appetite * 2;//招募成本
