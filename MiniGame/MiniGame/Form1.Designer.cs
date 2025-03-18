@@ -30,7 +30,19 @@
         {
             this.panel1 = new System.Windows.Forms.Panel();
             this.pnlGame = new System.Windows.Forms.Panel();
+            this.btnSeq1 = new System.Windows.Forms.Button();
+            this.btnSeq3 = new System.Windows.Forms.Button();
+            this.btnSeq2 = new System.Windows.Forms.Button();
+            this.btnSetting = new System.Windows.Forms.Button();
+            this.hpEnemy = new System.Windows.Forms.ProgressBar();
+            this.hpAlly = new System.Windows.Forms.ProgressBar();
+            this.lbAllyList = new System.Windows.Forms.Label();
+            this.lbEnemyList = new System.Windows.Forms.Label();
             this.pnlStatus = new System.Windows.Forms.Panel();
+            this.lbBedCount = new System.Windows.Forms.Label();
+            this.teBedCount = new System.Windows.Forms.TextBox();
+            this.lbFoodCount = new System.Windows.Forms.Label();
+            this.teFoodCount = new System.Windows.Forms.TextBox();
             this.lbTotalCount = new System.Windows.Forms.Label();
             this.teTotalCount = new System.Windows.Forms.TextBox();
             this.lbSoilder = new System.Windows.Forms.Label();
@@ -40,18 +52,8 @@
             this.lbFarmer = new System.Windows.Forms.Label();
             this.teFarmerCount = new System.Windows.Forms.TextBox();
             this.pnlRecruitCharacters = new System.Windows.Forms.FlowLayoutPanel();
-            this.lbFoodCount = new System.Windows.Forms.Label();
-            this.teFoodCount = new System.Windows.Forms.TextBox();
-            this.lbBedCount = new System.Windows.Forms.Label();
-            this.teBedCount = new System.Windows.Forms.TextBox();
-            this.lbEnemyList = new System.Windows.Forms.Label();
-            this.lbAllyList = new System.Windows.Forms.Label();
-            this.hpAlly = new System.Windows.Forms.ProgressBar();
-            this.hpEnemy = new System.Windows.Forms.ProgressBar();
-            this.btnSetting = new System.Windows.Forms.Button();
-            this.btnNoon = new System.Windows.Forms.Button();
-            this.btnNight = new System.Windows.Forms.Button();
-            this.btnMorning = new System.Windows.Forms.Button();
+            this.btnStart = new System.Windows.Forms.Button();
+            this.btnLog = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.pnlGame.SuspendLayout();
             this.pnlStatus.SuspendLayout();
@@ -64,30 +66,105 @@
             this.panel1.Controls.Add(this.pnlRecruitCharacters);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1200, 675);
+            this.panel1.Size = new System.Drawing.Size(800, 450);
             this.panel1.TabIndex = 0;
             // 
             // pnlGame
             // 
-            this.pnlGame.Controls.Add(this.btnMorning);
-            this.pnlGame.Controls.Add(this.btnNight);
-            this.pnlGame.Controls.Add(this.btnNoon);
+            this.pnlGame.Controls.Add(this.btnLog);
+            this.pnlGame.Controls.Add(this.btnSeq1);
+            this.pnlGame.Controls.Add(this.btnSeq3);
+            this.pnlGame.Controls.Add(this.btnSeq2);
             this.pnlGame.Controls.Add(this.btnSetting);
             this.pnlGame.Controls.Add(this.hpEnemy);
             this.pnlGame.Controls.Add(this.hpAlly);
             this.pnlGame.Controls.Add(this.lbAllyList);
             this.pnlGame.Controls.Add(this.lbEnemyList);
-            this.pnlGame.Location = new System.Drawing.Point(183, 0);
-            this.pnlGame.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlGame.Location = new System.Drawing.Point(122, 0);
             this.pnlGame.Name = "pnlGame";
-            this.pnlGame.Size = new System.Drawing.Size(1012, 476);
+            this.pnlGame.Size = new System.Drawing.Size(675, 317);
             this.pnlGame.TabIndex = 2;
+            // 
+            // btnSeq1
+            // 
+            this.btnSeq1.Location = new System.Drawing.Point(336, 267);
+            this.btnSeq1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSeq1.Name = "btnSeq1";
+            this.btnSeq1.Size = new System.Drawing.Size(50, 42);
+            this.btnSeq1.TabIndex = 21;
+            this.btnSeq1.Text = "1";
+            this.btnSeq1.UseVisualStyleBackColor = true;
+            // 
+            // btnSeq3
+            // 
+            this.btnSeq3.Location = new System.Drawing.Point(487, 267);
+            this.btnSeq3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSeq3.Name = "btnSeq3";
+            this.btnSeq3.Size = new System.Drawing.Size(50, 42);
+            this.btnSeq3.TabIndex = 20;
+            this.btnSeq3.Text = "3";
+            this.btnSeq3.UseVisualStyleBackColor = true;
+            // 
+            // btnSeq2
+            // 
+            this.btnSeq2.Location = new System.Drawing.Point(409, 267);
+            this.btnSeq2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSeq2.Name = "btnSeq2";
+            this.btnSeq2.Size = new System.Drawing.Size(50, 42);
+            this.btnSeq2.TabIndex = 19;
+            this.btnSeq2.Text = "2";
+            this.btnSeq2.UseVisualStyleBackColor = true;
+            // 
+            // btnSetting
+            // 
+            this.btnSetting.Location = new System.Drawing.Point(291, 8);
+            this.btnSetting.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSetting.Name = "btnSetting";
+            this.btnSetting.Size = new System.Drawing.Size(50, 42);
+            this.btnSetting.TabIndex = 18;
+            this.btnSetting.Text = "Setting";
+            this.btnSetting.UseVisualStyleBackColor = true;
+            // 
+            // hpEnemy
+            // 
+            this.hpEnemy.Location = new System.Drawing.Point(499, 14);
+            this.hpEnemy.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.hpEnemy.Name = "hpEnemy";
+            this.hpEnemy.Size = new System.Drawing.Size(161, 15);
+            this.hpEnemy.TabIndex = 17;
+            // 
+            // hpAlly
+            // 
+            this.hpAlly.Location = new System.Drawing.Point(14, 14);
+            this.hpAlly.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.hpAlly.Name = "hpAlly";
+            this.hpAlly.Size = new System.Drawing.Size(161, 15);
+            this.hpAlly.TabIndex = 16;
+            // 
+            // lbAllyList
+            // 
+            this.lbAllyList.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lbAllyList.Location = new System.Drawing.Point(11, 157);
+            this.lbAllyList.Name = "lbAllyList";
+            this.lbAllyList.Size = new System.Drawing.Size(295, 83);
+            this.lbAllyList.TabIndex = 15;
+            this.lbAllyList.Text = "ally";
+            this.lbAllyList.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lbEnemyList
+            // 
+            this.lbEnemyList.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lbEnemyList.Location = new System.Drawing.Point(312, 157);
+            this.lbEnemyList.Name = "lbEnemyList";
+            this.lbEnemyList.Size = new System.Drawing.Size(357, 83);
+            this.lbEnemyList.TabIndex = 13;
+            this.lbEnemyList.Text = "enemy";
             // 
             // pnlStatus
             // 
             this.pnlStatus.BackColor = System.Drawing.SystemColors.Info;
+            this.pnlStatus.Controls.Add(this.btnStart);
             this.pnlStatus.Controls.Add(this.lbBedCount);
             this.pnlStatus.Controls.Add(this.teBedCount);
             this.pnlStatus.Controls.Add(this.lbFoodCount);
@@ -100,214 +177,147 @@
             this.pnlStatus.Controls.Add(this.teBuilderCount);
             this.pnlStatus.Controls.Add(this.lbFarmer);
             this.pnlStatus.Controls.Add(this.teFarmerCount);
-            this.pnlStatus.Location = new System.Drawing.Point(0, 484);
-            this.pnlStatus.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlStatus.Location = new System.Drawing.Point(0, 323);
             this.pnlStatus.Name = "pnlStatus";
-            this.pnlStatus.Size = new System.Drawing.Size(1200, 190);
+            this.pnlStatus.Size = new System.Drawing.Size(800, 127);
             this.pnlStatus.TabIndex = 1;
+            // 
+            // lbBedCount
+            // 
+            this.lbBedCount.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lbBedCount.Location = new System.Drawing.Point(529, 59);
+            this.lbBedCount.Name = "lbBedCount";
+            this.lbBedCount.Size = new System.Drawing.Size(91, 19);
+            this.lbBedCount.TabIndex = 11;
+            this.lbBedCount.Text = "Bed Count";
+            // 
+            // teBedCount
+            // 
+            this.teBedCount.Location = new System.Drawing.Point(621, 57);
+            this.teBedCount.Name = "teBedCount";
+            this.teBedCount.ReadOnly = true;
+            this.teBedCount.Size = new System.Drawing.Size(105, 22);
+            this.teBedCount.TabIndex = 10;
+            // 
+            // lbFoodCount
+            // 
+            this.lbFoodCount.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lbFoodCount.Location = new System.Drawing.Point(529, 25);
+            this.lbFoodCount.Name = "lbFoodCount";
+            this.lbFoodCount.Size = new System.Drawing.Size(91, 19);
+            this.lbFoodCount.TabIndex = 9;
+            this.lbFoodCount.Text = "Food Count";
+            // 
+            // teFoodCount
+            // 
+            this.teFoodCount.Location = new System.Drawing.Point(621, 24);
+            this.teFoodCount.Name = "teFoodCount";
+            this.teFoodCount.ReadOnly = true;
+            this.teFoodCount.Size = new System.Drawing.Size(105, 22);
+            this.teFoodCount.TabIndex = 8;
             // 
             // lbTotalCount
             // 
             this.lbTotalCount.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lbTotalCount.Location = new System.Drawing.Point(334, 141);
-            this.lbTotalCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbTotalCount.Location = new System.Drawing.Point(223, 94);
             this.lbTotalCount.Name = "lbTotalCount";
-            this.lbTotalCount.Size = new System.Drawing.Size(120, 28);
+            this.lbTotalCount.Size = new System.Drawing.Size(80, 19);
             this.lbTotalCount.TabIndex = 7;
             this.lbTotalCount.Text = "Total Count";
             // 
             // teTotalCount
             // 
-            this.teTotalCount.Location = new System.Drawing.Point(464, 140);
-            this.teTotalCount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.teTotalCount.Location = new System.Drawing.Point(309, 93);
             this.teTotalCount.Name = "teTotalCount";
             this.teTotalCount.ReadOnly = true;
-            this.teTotalCount.Size = new System.Drawing.Size(156, 29);
+            this.teTotalCount.Size = new System.Drawing.Size(105, 22);
             this.teTotalCount.TabIndex = 6;
             // 
             // lbSoilder
             // 
             this.lbSoilder.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lbSoilder.Location = new System.Drawing.Point(20, 141);
-            this.lbSoilder.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbSoilder.Location = new System.Drawing.Point(13, 94);
             this.lbSoilder.Name = "lbSoilder";
-            this.lbSoilder.Size = new System.Drawing.Size(136, 28);
+            this.lbSoilder.Size = new System.Drawing.Size(91, 19);
             this.lbSoilder.TabIndex = 5;
             this.lbSoilder.Text = "Soilder Count";
             // 
             // teSoilderCount
             // 
-            this.teSoilderCount.Location = new System.Drawing.Point(159, 140);
-            this.teSoilderCount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.teSoilderCount.Location = new System.Drawing.Point(106, 93);
             this.teSoilderCount.Name = "teSoilderCount";
             this.teSoilderCount.ReadOnly = true;
-            this.teSoilderCount.Size = new System.Drawing.Size(156, 29);
+            this.teSoilderCount.Size = new System.Drawing.Size(105, 22);
             this.teSoilderCount.TabIndex = 4;
             // 
             // lbBuilder
             // 
             this.lbBuilder.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lbBuilder.Location = new System.Drawing.Point(20, 87);
-            this.lbBuilder.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbBuilder.Location = new System.Drawing.Point(13, 58);
             this.lbBuilder.Name = "lbBuilder";
-            this.lbBuilder.Size = new System.Drawing.Size(136, 28);
+            this.lbBuilder.Size = new System.Drawing.Size(91, 19);
             this.lbBuilder.TabIndex = 3;
             this.lbBuilder.Text = "Builder Count";
             // 
             // teBuilderCount
             // 
-            this.teBuilderCount.Location = new System.Drawing.Point(159, 86);
-            this.teBuilderCount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.teBuilderCount.Location = new System.Drawing.Point(106, 57);
             this.teBuilderCount.Name = "teBuilderCount";
             this.teBuilderCount.ReadOnly = true;
-            this.teBuilderCount.Size = new System.Drawing.Size(156, 29);
+            this.teBuilderCount.Size = new System.Drawing.Size(105, 22);
             this.teBuilderCount.TabIndex = 2;
             // 
             // lbFarmer
             // 
             this.lbFarmer.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lbFarmer.Location = new System.Drawing.Point(20, 38);
-            this.lbFarmer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lbFarmer.Location = new System.Drawing.Point(13, 25);
             this.lbFarmer.Name = "lbFarmer";
-            this.lbFarmer.Size = new System.Drawing.Size(136, 28);
+            this.lbFarmer.Size = new System.Drawing.Size(91, 19);
             this.lbFarmer.TabIndex = 1;
             this.lbFarmer.Text = "Farmer Count";
             // 
             // teFarmerCount
             // 
-            this.teFarmerCount.Location = new System.Drawing.Point(159, 36);
-            this.teFarmerCount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.teFarmerCount.Location = new System.Drawing.Point(106, 24);
             this.teFarmerCount.Name = "teFarmerCount";
             this.teFarmerCount.ReadOnly = true;
-            this.teFarmerCount.Size = new System.Drawing.Size(156, 29);
+            this.teFarmerCount.Size = new System.Drawing.Size(105, 22);
             this.teFarmerCount.TabIndex = 0;
             // 
             // pnlRecruitCharacters
             // 
             this.pnlRecruitCharacters.BackColor = System.Drawing.Color.PeachPuff;
             this.pnlRecruitCharacters.Location = new System.Drawing.Point(0, 0);
-            this.pnlRecruitCharacters.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlRecruitCharacters.Name = "pnlRecruitCharacters";
-            this.pnlRecruitCharacters.Size = new System.Drawing.Size(174, 476);
+            this.pnlRecruitCharacters.Size = new System.Drawing.Size(116, 317);
             this.pnlRecruitCharacters.TabIndex = 0;
             // 
-            // lbFoodCount
+            // btnStart
             // 
-            this.lbFoodCount.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lbFoodCount.Location = new System.Drawing.Point(793, 38);
-            this.lbFoodCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lbFoodCount.Name = "lbFoodCount";
-            this.lbFoodCount.Size = new System.Drawing.Size(136, 28);
-            this.lbFoodCount.TabIndex = 9;
-            this.lbFoodCount.Text = "Food Count";
+            this.btnStart.Location = new System.Drawing.Point(325, 17);
+            this.btnStart.Margin = new System.Windows.Forms.Padding(2);
+            this.btnStart.Name = "btnStart";
+            this.btnStart.Size = new System.Drawing.Size(103, 32);
+            this.btnStart.TabIndex = 22;
+            this.btnStart.Text = "開始回合";
+            this.btnStart.UseVisualStyleBackColor = true;
             // 
-            // teFoodCount
+            // btnLog
             // 
-            this.teFoodCount.Location = new System.Drawing.Point(932, 36);
-            this.teFoodCount.Margin = new System.Windows.Forms.Padding(4);
-            this.teFoodCount.Name = "teFoodCount";
-            this.teFoodCount.ReadOnly = true;
-            this.teFoodCount.Size = new System.Drawing.Size(156, 29);
-            this.teFoodCount.TabIndex = 8;
-            // 
-            // lbBedCount
-            // 
-            this.lbBedCount.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lbBedCount.Location = new System.Drawing.Point(793, 88);
-            this.lbBedCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lbBedCount.Name = "lbBedCount";
-            this.lbBedCount.Size = new System.Drawing.Size(136, 28);
-            this.lbBedCount.TabIndex = 11;
-            this.lbBedCount.Text = "Bed Count";
-            // 
-            // teBedCount
-            // 
-            this.teBedCount.Location = new System.Drawing.Point(932, 86);
-            this.teBedCount.Margin = new System.Windows.Forms.Padding(4);
-            this.teBedCount.Name = "teBedCount";
-            this.teBedCount.ReadOnly = true;
-            this.teBedCount.Size = new System.Drawing.Size(156, 29);
-            this.teBedCount.TabIndex = 10;
-            // 
-            // lbEnemyList
-            // 
-            this.lbEnemyList.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lbEnemyList.Location = new System.Drawing.Point(468, 235);
-            this.lbEnemyList.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lbEnemyList.Name = "lbEnemyList";
-            this.lbEnemyList.Size = new System.Drawing.Size(536, 28);
-            this.lbEnemyList.TabIndex = 13;
-            this.lbEnemyList.Text = "enemy";
-            this.lbEnemyList.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lbAllyList
-            // 
-            this.lbAllyList.Font = new System.Drawing.Font("PMingLiU", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.lbAllyList.Location = new System.Drawing.Point(17, 235);
-            this.lbAllyList.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lbAllyList.Name = "lbAllyList";
-            this.lbAllyList.Size = new System.Drawing.Size(443, 28);
-            this.lbAllyList.TabIndex = 15;
-            this.lbAllyList.Text = "ally";
-            this.lbAllyList.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // hpAlly
-            // 
-            this.hpAlly.Location = new System.Drawing.Point(21, 21);
-            this.hpAlly.Name = "hpAlly";
-            this.hpAlly.Size = new System.Drawing.Size(241, 23);
-            this.hpAlly.TabIndex = 16;
-            // 
-            // hpEnemy
-            // 
-            this.hpEnemy.Location = new System.Drawing.Point(749, 21);
-            this.hpEnemy.Name = "hpEnemy";
-            this.hpEnemy.Size = new System.Drawing.Size(241, 23);
-            this.hpEnemy.TabIndex = 17;
-            // 
-            // btnSetting
-            // 
-            this.btnSetting.Location = new System.Drawing.Point(437, 12);
-            this.btnSetting.Name = "btnSetting";
-            this.btnSetting.Size = new System.Drawing.Size(75, 63);
-            this.btnSetting.TabIndex = 18;
-            this.btnSetting.Text = "Setting";
-            this.btnSetting.UseVisualStyleBackColor = true;
-            // 
-            // btnNoon
-            // 
-            this.btnNoon.Location = new System.Drawing.Point(614, 400);
-            this.btnNoon.Name = "btnNoon";
-            this.btnNoon.Size = new System.Drawing.Size(75, 63);
-            this.btnNoon.TabIndex = 19;
-            this.btnNoon.Text = "午";
-            this.btnNoon.UseVisualStyleBackColor = true;
-            // 
-            // btnNight
-            // 
-            this.btnNight.Location = new System.Drawing.Point(730, 400);
-            this.btnNight.Name = "btnNight";
-            this.btnNight.Size = new System.Drawing.Size(75, 63);
-            this.btnNight.TabIndex = 20;
-            this.btnNight.Text = "晚";
-            this.btnNight.UseVisualStyleBackColor = true;
-            // 
-            // btnMorning
-            // 
-            this.btnMorning.Location = new System.Drawing.Point(504, 400);
-            this.btnMorning.Name = "btnMorning";
-            this.btnMorning.Size = new System.Drawing.Size(75, 63);
-            this.btnMorning.TabIndex = 21;
-            this.btnMorning.Text = "早";
-            this.btnMorning.UseVisualStyleBackColor = true;
+            this.btnLog.Location = new System.Drawing.Point(361, 8);
+            this.btnLog.Margin = new System.Windows.Forms.Padding(2);
+            this.btnLog.Name = "btnLog";
+            this.btnLog.Size = new System.Drawing.Size(50, 42);
+            this.btnLog.TabIndex = 22;
+            this.btnLog.Text = "Log";
+            this.btnLog.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1200, 675);
+            this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.panel1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "Form1";
             this.panel1.ResumeLayout(false);
@@ -340,10 +350,12 @@
         private System.Windows.Forms.Label lbAllyList;
         private System.Windows.Forms.ProgressBar hpAlly;
         private System.Windows.Forms.ProgressBar hpEnemy;
-        private System.Windows.Forms.Button btnNight;
-        private System.Windows.Forms.Button btnNoon;
+        private System.Windows.Forms.Button btnSeq3;
+        private System.Windows.Forms.Button btnSeq2;
         private System.Windows.Forms.Button btnSetting;
-        private System.Windows.Forms.Button btnMorning;
+        private System.Windows.Forms.Button btnSeq1;
+        private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnLog;
     }
 }
 

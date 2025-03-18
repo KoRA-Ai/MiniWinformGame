@@ -18,19 +18,21 @@ namespace MiniGame
         private ResourceManager resourceManager;
         private CharacterManager characterManager;
         private BattleSystem battaleSystem;
+        private StringBuilder sblog = new StringBuilder();
 
         public Form1()
         {
             InitializeComponent();
-            btnSetting.Click += BtnSetting_Click;
+            btnSeq1.Enabled = btnSeq2.Enabled = btnSeq3.Enabled = false;
+
             lbAllyList.Text = lbEnemyList.Text = string.Empty;
-            //hpAlly.Value = 10;
 
             initConfiguration = new GameConfiguration(5, 100, 10, 5);
             resourceManager = new ResourceManager(initConfiguration);
             characterManager = new CharacterManager(initConfiguration, resourceManager);
             battaleSystem = new BattleSystem(characterManager.GetAllInGameCharacters(), initConfiguration.InitialEnemyCount);
             SetEnemyCharacterUI();
+            UpdateResourceCount();
 
             foreach (AllyCharacter.AllyTypes value in Enum.GetValues(typeof(AllyCharacter.AllyTypes)))
             {
@@ -44,12 +46,37 @@ namespace MiniGame
                 button.Click += (s, e) =>
                 {
                     characterManager.HireCharacter(value, ref part1Msg);
+                    sblog.AppendLine(part1Msg.ToString());
 
                     UpdateAllyCount();
                     SetAllyCharacterUI();
                 };
                 pnlRecruitCharacters.Controls.Add(button);
             }
+            btnSetting.Click += BtnSetting_Click;
+            btnStart.Click += (s, e) =>
+            {
+                if (characterManager.GetAllCharactersCount() == 0) show
+                btnSeq1.Enabled = true;
+                btnStart.Enabled = false;
+            };
+            btnSeq1.Click += BtnSeq1_Click;
+            btnLog.Click += BtnLog_Click;
+        }
+
+        private void BtnLog_Click(object sender, EventArgs e)
+        {
+            FormLog form = new FormLog(sblog.ToString());
+            form.ShowDialog();
+        }
+
+        private void BtnSeq1_Click(object sender, EventArgs e)
+        {
+            StringBuilder msg = new StringBuilder();
+            characterManager.AllocateResourceAndRemoveCharacter(ref msg);
+            sblog.AppendLine(msg.ToString());
+            UpdateAllyCount();
+            UpdateResourceCount();
         }
 
         private void BtnSetting_Click(object sender, EventArgs e)
@@ -60,6 +87,11 @@ namespace MiniGame
             frm.FormClosed += (s, _) =>
             {
                 initConfiguration = new GameConfiguration(frm.enemyCount, frm.foodCount, frm.bedCount, frm.maxCharCount);
+                battaleSystem = new BattleSystem(characterManager.GetAllInGameCharacters(), initConfiguration.InitialEnemyCount);
+                characterManager = new CharacterManager(initConfiguration, resourceManager);
+                resourceManager = new ResourceManager(initConfiguration);
+                SetEnemyCharacterUI();
+                UpdateResourceCount();
             };
         }
 
@@ -98,6 +130,12 @@ namespace MiniGame
             teBuilderCount.Text = characterManager.GetBuildersCount().ToString();
             teFarmerCount.Text = characterManager.GetFarmersCount().ToString();
             teTotalCount.Text = characterManager.GetAllCharactersCount().ToString();
+        }
+
+        private void UpdateResourceCount()
+        {
+            teFoodCount.Text = resourceManager.TotalFoods.ToString();
+            teBedCount.Text = resourceManager.EmptyBeds.ToString();
         }
     }
 }

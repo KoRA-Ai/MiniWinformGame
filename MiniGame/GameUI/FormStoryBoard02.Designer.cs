@@ -120,7 +120,7 @@
             this.btnConfirm.Name = "btnConfirm";
             this.btnConfirm.Size = new System.Drawing.Size(75, 23);
             this.btnConfirm.TabIndex = 27;
-            this.btnConfirm.Text = "確定";
+            this.btnConfirm.Text = "開始遊戲";
             this.btnConfirm.UseVisualStyleBackColor = true;
             // 
             // FormStoryBoard02

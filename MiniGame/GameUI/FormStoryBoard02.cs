@@ -46,7 +46,7 @@ namespace GameUI
                 {
                     characterManager.HireCharacter(ch, ref msg);
                 }
-
+                labelMsg.Text = msg.ToString();
                 this.Close();
             };
         }
