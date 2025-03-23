@@ -12,18 +12,15 @@ namespace GameLogic.BattleSystem
 {
     public class BattleSystem
     {
-        private List<AllyCharacter> _allies;
         private List<EnemyCharacter> _enemies;
 
-        public BattleSystem(List<AllyCharacter> allies, List<EnemyCharacter> enemies)
+        public BattleSystem(List<EnemyCharacter> enemies)
         {
-            _allies = allies;
             _enemies = enemies;
         }
 
         public BattleSystem(List<AllyCharacter> allies, int enemyCount)
         {
-            _allies = allies;
             _enemies = new List<EnemyCharacter>();
             for (int i = 1; i <= enemyCount; i++)
             {
@@ -31,10 +28,10 @@ namespace GameLogic.BattleSystem
             }
         }
 
-        public void Fight_Async()
+        public void Fight(List<AllyCharacter> allies)
         {
             Console.WriteLine("戰鬥開始");
-            foreach (var ally in _allies.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite))
+            foreach (var ally in allies.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite))
             {
                 foreach (var enemy in _enemies.Where(e => !e.IsDead))
                 {
@@ -57,6 +54,7 @@ namespace GameLogic.BattleSystem
                 {
                     ally.TakeDamage(enemy.AttackPower);
                 }
+                System.Threading.Thread.Sleep(2000);
             }
         }
 
