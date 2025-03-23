@@ -19,7 +19,7 @@ namespace ConsoleGame
             ResourceManager resourceManager = new ResourceManager(initConfiguration);
             //BehaviorSystem behaviorSystem = new GameLogic.BehaviorSystem(resourceManager, characterManager);
             CharacterManager characterManager = new CharacterManager(initConfiguration, resourceManager);
-            BattleSystem battaleSystem = new BattleSystem(characterManager.GetAllInGameCharacters(), initConfiguration.InitialEnemyCount);
+            BattleSystem battaleSystem = new BattleSystem(initConfiguration.InitialEnemyCount);
 
             Console.WriteLine("食物數量: " + initConfiguration.InitialFoodCount);
             Console.WriteLine("床位數量: " + initConfiguration.InitialBedCount);
@@ -43,7 +43,7 @@ namespace ConsoleGame
 
             //! 戰鬥
             StringBuilder part3Msg = new StringBuilder();
-            battaleSystem.Fight_Async();
+            battaleSystem.Fight(characterManager.GetAllInGameCharacters());
             characterManager.RemoveDeadCharacter(ref part3Msg);
             Console.WriteLine(part3Msg);
 

@@ -19,7 +19,7 @@ namespace GameLogic.BattleSystem
             _enemies = enemies;
         }
 
-        public BattleSystem(List<AllyCharacter> allies, int enemyCount)
+        public BattleSystem(int enemyCount)
         {
             _enemies = new List<EnemyCharacter>();
             for (int i = 1; i <= enemyCount; i++)

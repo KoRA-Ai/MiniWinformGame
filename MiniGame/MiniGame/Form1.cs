@@ -26,25 +26,24 @@ namespace MiniGame
             get { return _currentRound; }
             set
             {
+                _currentRound = value;
                 switch (_currentRound)
                 {
                     case 2://消耗
                         lbNowRound.Text = "僱用角色";
                         消耗();
-                        _currentRound += 1;
                         break;
 
                     case 3://戰鬥
                         lbNowRound.Text = "戰鬥回合";
-                        battaleSystem.Fight(characterManager.GetAllInGameCharacters());
-                        //battaleSystem.Fight_1v1(characterManager.GetAllInGameCharacters());
-                        _currentRound += 1;
+                        打架();
+
                         break;
 
                     case 4://生產
                         lbNowRound.Text = "生產回合";
                         生產();
-                        _currentRound += 1;
+                        currentRound += 1;
                         break;
 
                     case 5://回合結算
@@ -63,7 +62,7 @@ namespace MiniGame
             initConfiguration = new GameConfiguration(5, 100, 10, 5);
             resourceManager = new ResourceManager(initConfiguration);
             characterManager = new CharacterManager(initConfiguration, resourceManager);
-            battaleSystem = new BattleSystem(characterManager.GetAllInGameCharacters(), initConfiguration.InitialEnemyCount);
+            battaleSystem = new BattleSystem(initConfiguration.InitialEnemyCount);
             SetEnemyCharacterUI();
             UpdateResourceCount();
 
@@ -78,9 +77,9 @@ namespace MiniGame
 
                 button.Click += (s, e) =>
                 {
-                    if (currentRound != 1)
+                    if (_currentRound != 1)
                     {
-                        currentRound = 1;
+                        _currentRound = 1;
                         lbNowRound.Text = "僱用角色";
                     }
                     characterManager.HireCharacter(value, ref part1Msg);
@@ -97,10 +96,10 @@ namespace MiniGame
                 pnlRecruitCharacters.Controls.Add(button);
             }
 
-            btnSetting.Click += (s, e) => { 設定()};
+            btnSetting.Click += (s, e) => { 設定(); };
             btnEndRound.Click += (s, e) =>
             {
-                switch (currentRound)
+                switch (_currentRound)
                 {
                     case 0://設定
                         break;
@@ -113,24 +112,8 @@ namespace MiniGame
                         }
                         currentRound += 1;
                         btnEndRound.Visible = false;
-
-                        break;
-
-                    case 2://消耗
-                        currentRound += 1;
-                        break;
-
-                    case 3://戰鬥
-                        break;
-
-                    case 4://生產
-                        break;
-
-                    case 5://回合結算
                         break;
                 }
-
-                btnEndRound.Enabled = false;
             };
 
             btnLog.Click += BtnLog_Click;
@@ -150,12 +133,26 @@ namespace MiniGame
             sblog.AppendLine(msg.ToString());
             UpdateAllyCount();
             UpdateResourceCount();
+            currentRound += 1;
         }
 
         private void 生產()
         {
             StringBuilder msg = new StringBuilder();
             characterManager.MakeAllCharactersWork(ref msg);
+            sblog.AppendLine("【生產回合】");
+            sblog.AppendLine(msg.ToString());
+            UpdateAllyCount();
+            UpdateResourceCount();
+        }
+
+        private void 打架()
+        {
+            StringBuilder msg = new StringBuilder();
+            //allies.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite)
+            battaleSystem.Fight(characterManager.GetAllInGameCharacters());
+            //battaleSystem.Fight_1v1(characterManager.GetAllInGameCharacters());
+
             sblog.AppendLine("【生產回合】");
             sblog.AppendLine(msg.ToString());
             UpdateAllyCount();
@@ -171,7 +168,7 @@ namespace MiniGame
             frm.FormClosed += (s, _) =>
             {
                 initConfiguration = new GameConfiguration(frm.enemyCount, frm.foodCount, frm.bedCount, frm.maxCharCount);
-                battaleSystem = new BattleSystem(characterManager.GetAllInGameCharacters(), initConfiguration.InitialEnemyCount);
+                battaleSystem = new BattleSystem(initConfiguration.InitialEnemyCount);
                 characterManager = new CharacterManager(initConfiguration, resourceManager);
                 resourceManager = new ResourceManager(initConfiguration);
                 SetEnemyCharacterUI();
