@@ -12,19 +12,19 @@ namespace GameLogic.BattleSystem
 {
     public class BattleSystem
     {
-        private List<EnemyCharacter> _enemies;
+        public List<EnemyCharacter> Enemies;
 
         public BattleSystem(List<EnemyCharacter> enemies)
         {
-            _enemies = enemies;
+            Enemies = enemies;
         }
 
         public BattleSystem(int enemyCount)
         {
-            _enemies = new List<EnemyCharacter>();
+            Enemies = new List<EnemyCharacter>();
             for (int i = 1; i <= enemyCount; i++)
             {
-                _enemies.Add(new Enemy01());
+                Enemies.Add(new Enemy01());
             }
         }
 
@@ -33,7 +33,7 @@ namespace GameLogic.BattleSystem
             Console.WriteLine("戰鬥開始");
             foreach (var ally in allies.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite))
             {
-                foreach (var enemy in _enemies.Where(e => !e.IsDead))
+                foreach (var enemy in Enemies.Where(e => !e.IsDead))
                 {
                     if (ally.IsDead) continue;
                     Fight_1v1(ally, enemy);
@@ -60,7 +60,7 @@ namespace GameLogic.BattleSystem
 
         public int GetEnemyCount()
         {
-            return _enemies.Count();
+            return Enemies.Count();
         }
     }
 }

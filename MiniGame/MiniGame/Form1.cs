@@ -8,6 +8,7 @@ using System;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MiniGame
@@ -27,29 +28,38 @@ namespace MiniGame
             set
             {
                 _currentRound = value;
-                switch (_currentRound)
+                Task.Run(async () =>
                 {
-                    case 2://消耗
-                        lbNowRound.Text = "僱用角色";
-                        消耗();
-                        break;
+                    switch (_currentRound)
+                    {
+                        case 2://消耗
+                            Invoke((Action)(() => lbNowRound.Text = "消耗"));
+                            await Task.Delay(500);
+                            Invoke((Action)(() => { 消耗(); }));
 
-                    case 3://戰鬥
-                        lbNowRound.Text = "戰鬥回合";
-                        打架();
+                            break;
 
-                        break;
+                        case 3://戰鬥
+                            Invoke((Action)(() => lbNowRound.Text = "戰鬥回合"));
+                            await Task.Delay(500);
 
-                    case 4://生產
-                        lbNowRound.Text = "生產回合";
-                        生產();
-                        currentRound += 1;
-                        break;
+                            Invoke((Action)(() => { 打架(); }));
 
-                    case 5://回合結算
-                        lbNowRound.Text = "回合結算";
-                        break;
-                }
+                            break;
+
+                        case 4://生產
+                            Invoke((Action)(() => lbNowRound.Text = "生產回合"));
+                            Invoke((Action)(() => { 生產(); }));
+
+                            currentRound += 1;
+                            break;
+
+                        case 5://回合結算
+                            Invoke((Action)(() => lbNowRound.Text = "回合結算"));
+
+                            break;
+                    }
+                });
             }
         }
 
@@ -127,36 +137,62 @@ namespace MiniGame
 
         private void 消耗()
         {
+            // 確保 UI 更新在主執行緒
+            if (InvokeRequired)
+            {
+                Invoke(new Action(消耗));
+                return;
+            }
+
             StringBuilder msg = new StringBuilder();
             characterManager.AllocateResourceAndRemoveCharacter(ref msg);
             sblog.AppendLine("【消耗回合】");
             sblog.AppendLine(msg.ToString());
             UpdateAllyCount();
             UpdateResourceCount();
+
             currentRound += 1;
         }
 
         private void 生產()
-        {
+        {  // 確保 UI 更新在主執行緒
+            if (InvokeRequired)
+            {
+                Invoke(new Action(生產));
+                return;
+            }
             StringBuilder msg = new StringBuilder();
             characterManager.MakeAllCharactersWork(ref msg);
             sblog.AppendLine("【生產回合】");
             sblog.AppendLine(msg.ToString());
             UpdateAllyCount();
             UpdateResourceCount();
+            currentRound += 1;
         }
 
         private void 打架()
         {
-            StringBuilder msg = new StringBuilder();
-            //allies.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite)
-            battaleSystem.Fight(characterManager.GetAllInGameCharacters());
-            //battaleSystem.Fight_1v1(characterManager.GetAllInGameCharacters());
+            //battaleSystem.Fight(characterManager.GetAllInGameCharacters());
+            if (InvokeRequired)
+            {
+                Invoke(new Action(打架));
+                return;
+            }
+            foreach (var ally in characterManager.GetAllInGameCharacters().Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite))
+            {
+                lbAlly.Text = ally.AllyType.ToString();
+                foreach (var enemy in battaleSystem.Enemies.Where(e => !e.IsDead))
+                {
+                    lbEnemy.Text = enemy.EnemyType.ToString();
 
-            sblog.AppendLine("【生產回合】");
-            sblog.AppendLine(msg.ToString());
-            UpdateAllyCount();
+                    if (ally.IsDead) continue;
+                    battaleSystem.Fight_1v1(ally, enemy);
+                    UpdateAllyCount();
+                }
+            }
+
             UpdateResourceCount();
+            currentRound += 1;
         }
 
         private void 設定()
