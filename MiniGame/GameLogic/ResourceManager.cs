@@ -9,6 +9,7 @@ namespace GameLogic.ResourceManagement
     public class ResourceManager
     {
         public int EmptyBeds;
+        public int TotalBeds;
 
         public int TotalFoods;
 
@@ -16,6 +17,7 @@ namespace GameLogic.ResourceManagement
         {
             TotalFoods = configuration.InitialFoodCount;
             EmptyBeds = configuration.InitialBedCount;
+            TotalBeds = configuration.InitialBedCount;
         }
 
         /// <summary>
@@ -56,22 +58,17 @@ namespace GameLogic.ResourceManagement
         public void MakeBed(int addCount, int turn = 1)
         {
             EmptyBeds += (addCount / turn);
-            //TotalBeds += (addCount / turn);
+            TotalBeds += (addCount / turn);
         }
 
         public void GetCurrentResource()
         {
-            Console.WriteLine("現在食物 :" + TotalFoods + "現在床位 :" + EmptyBeds);
+            Console.WriteLine("現在食物 :" + TotalFoods + "空床位 :" + EmptyBeds + "全部床位 :" + TotalBeds);
         }
 
         public enum CheckResourceType
         {
             CheckBed, CheckFood, CheckAll
-        }
-
-        public static implicit operator System.Resources.ResourceManager(ResourceManager v)
-        {
-            throw new NotImplementedException();
         }
     }
 }

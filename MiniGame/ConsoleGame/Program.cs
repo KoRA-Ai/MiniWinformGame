@@ -43,7 +43,7 @@ namespace ConsoleGame
 
             //! 戰鬥
             StringBuilder part3Msg = new StringBuilder();
-            battaleSystem.Fight(characterManager.GetAllInGameCharacters());
+            battaleSystem.Fight(characterManager.GetAllInGameCharacters(), ref part3Msg);
             characterManager.RemoveDeadCharacter(ref part3Msg);
             Console.WriteLine(part3Msg);
 

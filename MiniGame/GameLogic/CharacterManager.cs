@@ -12,7 +12,17 @@ namespace GameLogic
 {
     public class CharacterManager//增減角色
     {
-        private List<AllyCharacter> InGameCharacters;
+        private List<AllyCharacter> _InGameCharacters;
+
+        private List<AllyCharacter> InGameCharacters
+        {
+            get { return _InGameCharacters.Where(a => !a.IsDead).ToList(); }
+            set
+            {
+                _InGameCharacters = value;
+            }
+        }
+
         public int MaxCharacterCount;
         private ResourceManager _resourceManager;
         private BehaviorSystem _behaviorSystem;
@@ -20,71 +30,54 @@ namespace GameLogic
         public CharacterManager(GameConfiguration configuration, ResourceManager resourceManager)
         {
             this.MaxCharacterCount = configuration.MaxCharacterCount;
-            InGameCharacters = new List<AllyCharacter>();
+            _InGameCharacters = new List<AllyCharacter>();
             _resourceManager = resourceManager;
             _behaviorSystem = new BehaviorSystem(resourceManager);
         }
 
         #region 增減角色
 
-        public bool CheckHireRules(List<AllyCharacter> characterList, out string output)
+        public (bool isSuccessed, string err) CheckHireRules(AllyCharacter character)
         {
-            bool result = true;
-
-            StringBuilder sb = new StringBuilder();
-            bool isOverLimit = false;
-            if (characterList.Count >= MaxCharacterCount)
+            if (_InGameCharacters.Count >= MaxCharacterCount)
             {
-                sb.AppendLine(" 超過場上人數上限");
-                isOverLimit = true;
+                return (false, "超過場上人數上限");
             }
 
-            int fee = 0;
-            int bed = 0;
-            foreach (var ch in characterList)
+            int fee = character.Appetite * 2;//招募成本
+            int bed = character.BedCount;
+
+            if (_resourceManager.TotalFoods - fee < 0)
             {
-                fee += ch.Appetite * 2;//招募成本
-                bed += ch.BedCount; ;
+                return (false, $"所需食物數量: {fee} -->食物不足");
             }
-            bool isEnoughFood = (_resourceManager.TotalFoods - fee >= 0 ? true : false);
-            sb.AppendLine($"所需食物數量: {fee}" + (isEnoughFood ? "" : "-->食物不足"));
 
-            bool isEnoughBed = (_resourceManager.EmptyBeds - bed >= 0 ? true : false);
-            sb.AppendLine($"所需床位數量: {bed}" + (isEnoughBed ? "" : "-->床位不足"));
+            if (_resourceManager.EmptyBeds - bed < 0)
+            {
+                return (false, $"所需床位數量: {bed} -->床位不足");
+            }
 
-            result = !isOverLimit && isEnoughFood && isEnoughBed;
-
-            output = sb.ToString();
-            return result;
+            return (true, "驗鄭成功");
         }
 
         public void HireCharacter(AllyCharacter character, ref StringBuilder errMsg)
         {
-            int fee = character.Appetite * 2;//招募成本
-
-            if (InGameCharacters.Count <= MaxCharacterCount)
+            var result = CheckHireRules(character);
+            if (result.isSuccessed)
             {
-                if (_resourceManager.TotalFoods - fee >= 0)
-                {
-                    InGameCharacters.Add(character);
-                    _resourceManager.EatFood(fee);
-                    MaxCharacterCount++;
-                    errMsg.AppendLine("Add " + character.AllyType.ToString() + ", 剩餘食物: " + _resourceManager.TotalFoods);
-                }
-                else
-                {
-                    //食物不足
-                    errMsg.AppendLine(character.AllyType.ToString() + "角色加入失敗 - 食物不足");
-                }
+                _InGameCharacters.Add(character);
+                bool eatOK = _behaviorSystem.EatFood(character, 2);
+                bool bedOK = _behaviorSystem.GetBed(character);
+                MaxCharacterCount++;
+                errMsg.AppendLine("Add " + character.AllyType.ToString() + ", 剩餘食物: " + _resourceManager.TotalFoods);
             }
             else
             {
-                //超過場上人數上限
-                errMsg.AppendLine(character.AllyType.ToString() + "角色加入失敗 - 超過場上人數上限");
+                errMsg.AppendLine(result.err);
             }
         }
 
-        public void HireCharacter(AllyTypes allyType, ref StringBuilder errMsg)
+        public (bool isSuccessed, string err) HireCharacter(AllyTypes allyType)
         {
             AllyCharacter character;
             switch (allyType)
@@ -104,46 +97,15 @@ namespace GameLogic
                 default:
                     throw new ArgumentNullException();
             }
-
-            int fee = character.Appetite * 2;//招募成本
-
-            if (InGameCharacters.Count <= MaxCharacterCount)
+            var result = CheckHireRules(character);
+            if (result.isSuccessed)
             {
-                if (_resourceManager.TotalFoods - fee >= 0)
-                {
-                    InGameCharacters.Add(character);
-                    _resourceManager.EatFood(fee);
-                    MaxCharacterCount++;
-                    errMsg.AppendLine("Add " + character.AllyType.ToString() + ", 剩餘食物: " + _resourceManager.TotalFoods);
-                }
-                else
-                {
-                    //食物不足
-                    errMsg.AppendLine(character.AllyType.ToString() + "角色加入失敗 - 食物不足");
-                }
+                _InGameCharacters.Add(character);
+                bool eatOK = _behaviorSystem.EatFood(character, 2);
+                bool bedOK = _behaviorSystem.GetBed(character);
+                MaxCharacterCount++;
             }
-            else
-            {
-                //超過場上人數上限
-                errMsg.AppendLine(character.AllyType.ToString() + "角色加入失敗 - 超過場上人數上限");
-            }
-        }
-
-        public void AutoRemoveCharacter(ResourceManager.CheckResourceType checkResourceType, ref StringBuilder errMsg)
-        {
-            if (checkResourceType == ResourceManager.CheckResourceType.CheckFood)
-            {
-                RemoveCharacter_Food(ref errMsg);
-            }
-            else if (checkResourceType == ResourceManager.CheckResourceType.CheckBed)
-            {
-                RemoveCharacter_Bed(ref errMsg);
-            }
-            else if (checkResourceType == ResourceManager.CheckResourceType.CheckAll)
-            {
-                RemoveCharacter_Food(ref errMsg);
-                RemoveCharacter_Bed(ref errMsg);
-            }
+            return result;
         }
 
         public void RemoveCharacter_Food(ref StringBuilder errMsg)
@@ -202,7 +164,7 @@ namespace GameLogic
             }
             if (canRemove)
             {
-                InGameCharacters.Remove(character);
+                _InGameCharacters.Remove(character);
                 MaxCharacterCount--;
                 errMsg.AppendLine("移除" + character.AllyType.ToString());
             }
@@ -210,13 +172,11 @@ namespace GameLogic
 
         public void RemoveDeadCharacter(ref StringBuilder errmsg)
         {
-            //InGameCharacters = InGameCharacters.Where(a => !a.IsDead).ToList();
-
-            var deadCharacters = InGameCharacters.Where(a => a.IsDead).ToList();
+            var deadCharacters = _InGameCharacters.Where(a => a.IsDead).ToList();
             foreach (var dead in deadCharacters)
             {
                 RemoveCharacter(dead, ref errmsg);
-                InGameCharacters.Remove(dead);
+                _InGameCharacters.Remove(dead);
                 _resourceManager.EmptyBeds++;
             }
         }

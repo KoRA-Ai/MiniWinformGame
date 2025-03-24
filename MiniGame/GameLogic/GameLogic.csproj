@@ -53,11 +53,9 @@
     <Compile Include="CharacterManager.cs" />
     <Compile Include="ResourceManager.cs" />
     <Compile Include="BehaviorSystem.cs" />
+    <Compile Include="TurnSettlement.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ChracterManagement\" />
-    <Folder Include="TurnSettlement\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\DataManagement\DataManagement.csproj">
       <Project>{fdca58b8-a02c-4e56-8d94-65903a0cc37b}</Project>

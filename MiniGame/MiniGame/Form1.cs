@@ -19,57 +19,22 @@ namespace MiniGame
         private ResourceManager resourceManager;
         private CharacterManager characterManager;
         private BattleSystem battaleSystem;
+        private TurnSettlement turnSettlement = new TurnSettlement();
         private StringBuilder sblog = new StringBuilder();
-        private int _currentRound = 0;
 
-        private int currentRound
-        {
-            get { return _currentRound; }
-            set
-            {
-                _currentRound = value;
-                Task.Run(async () =>
-                {
-                    switch (_currentRound)
-                    {
-                        case 2://消耗
-                            Invoke((Action)(() => lbNowRound.Text = "消耗"));
-                            await Task.Delay(500);
-                            Invoke((Action)(() => { 消耗(); }));
+        //private int _currentRound = 0;
+        private bool isStartRound = true;
 
-                            break;
+        private int currentRound = 0;
 
-                        case 3://戰鬥
-                            Invoke((Action)(() => lbNowRound.Text = "戰鬥回合"));
-                            await Task.Delay(500);
-
-                            Invoke((Action)(() => { 打架(); }));
-
-                            break;
-
-                        case 4://生產
-                            Invoke((Action)(() => lbNowRound.Text = "生產回合"));
-                            Invoke((Action)(() => { 生產(); }));
-
-                            currentRound += 1;
-                            break;
-
-                        case 5://回合結算
-                            Invoke((Action)(() => lbNowRound.Text = "回合結算"));
-
-                            break;
-                    }
-                });
-            }
-        }
-
-        public Form1()
+        public Form1(GameConfiguration initConfiguration = null)
         {
             InitializeComponent();
 
             lbAllyList.Text = lbEnemyList.Text = string.Empty;
-
-            initConfiguration = new GameConfiguration(5, 100, 10, 5);
+            btnEndRound.Enabled = false;
+            if (initConfiguration == null)
+                initConfiguration = new GameConfiguration(5, 100, 10, 5);
             resourceManager = new ResourceManager(initConfiguration);
             characterManager = new CharacterManager(initConfiguration, resourceManager);
             battaleSystem = new BattleSystem(initConfiguration.InitialEnemyCount);
@@ -78,7 +43,6 @@ namespace MiniGame
 
             foreach (AllyCharacter.AllyTypes value in Enum.GetValues(typeof(AllyCharacter.AllyTypes)))
             {
-                StringBuilder part1Msg = new StringBuilder();
                 Button button = new Button();
                 button.Name = "btnRecruit" + value.ToString();
                 button.Text = value.ToString();
@@ -87,17 +51,24 @@ namespace MiniGame
 
                 button.Click += (s, e) =>
                 {
-                    if (_currentRound != 1)
+                    btnEndRound.Enabled = true;
+
+                    if (currentRound != 1)
                     {
-                        _currentRound = 1;
+                        currentRound = 1;
                         lbNowRound.Text = "僱用角色";
                     }
-                    characterManager.HireCharacter(value, ref part1Msg);
-                    sblog.AppendLine(part1Msg.ToString());
+                    var result = characterManager.HireCharacter(value);
+                    if (!result.isSuccessed)
+                    {
+                        MessageBox.Show(result.err);
+                    }
+                    sblog.AppendLine(result.err);
 
-                    UpdateAllyCount();
                     SetAllyCharacterUI();
+                    UpdateResourceCount();
 
+                    //一旦招募就將設定關起來
                     if (characterManager.GetAllCharactersCount() > 0)
                     {
                         btnSetting.Enabled = false;
@@ -107,23 +78,82 @@ namespace MiniGame
             }
 
             btnSetting.Click += (s, e) => { 設定(); };
-            btnEndRound.Click += (s, e) =>
+            btnEndRound.Click += async (s, e) =>
             {
-                switch (_currentRound)
+                isStartRound = !isStartRound;
+                if (isStartRound) currentRound += 1;
+                switch (currentRound)
                 {
-                    case 0://設定
+                    case 1://僱用角色回合
+                        if (!isStartRound)
+                        {
+                            btnEndRound.Enabled = true;
+                            //禁止僱用
+                            foreach (Control c in pnlRecruitCharacters.Controls)
+                            {
+                                c.Enabled = false;
+                            }
+                        }
                         break;
 
-                    case 1://僱用角色回合
-                        if (characterManager.GetAllCharactersCount() == 0)
+                    case 2://消耗
+                        if (isStartRound)
                         {
-                            MessageBox.Show("尚未僱用角色");
+                            lbNowRound.Text = "消耗";
+                            btnEndRound.Text = "自動執行回合...";
+                            await Task.Delay(2000);
+                            消耗();
+                            isStartRound = false;
+                        }
+
+                        break;
+
+                    case 3://戰鬥
+                        if (isStartRound)
+                        {
+                            lbNowRound.Text = "戰鬥回合";
+                            btnEndRound.Text = "自動執行回合...";
+                            await Task.Delay(1000);
+                            打架();
+                            isStartRound = false;
+                        }
+
+                        break;
+
+                    case 4://生產
+                        lbNowRound.Text = "生產回合";
+                        btnEndRound.Text = "自動執行回合...";
+                        await Task.Delay(1000);
+                        生產();
+                        isStartRound = false;
+
+                        break;
+
+                    case 5://回合結算
+                        lbNowRound.Text = "回合結算";
+                        btnEndRound.Text = "...";
+                        if (turnSettlement.IsWinGame(characterManager, battaleSystem))
+                        {
+                            MessageBox.Show("遊戲結束 - 我方勝利");
+                            MessageBox.Show("將開始新回合");
+                            Form1 form1 = new Form1();
+                            //1:1消耗
+                            form1.Show();
+                        }
+                        else
+                        {
+                            MessageBox.Show("遊戲結束 - 我方失敗");
+                            MessageBox.Show("將開始新回合");
+                            initConfiguration = new GameConfiguration(5 + battaleSystem.GetEnemyCount(), 100, 10, 5);
+                            Form1 form1 = new Form1(initConfiguration);
+                            form1.Show();
                             return;
                         }
-                        currentRound += 1;
-                        btnEndRound.Visible = false;
                         break;
                 }
+
+                if (isStartRound) btnEndRound.Text = "結束此回合";
+                else btnEndRound.Text = "進行下回合";
             };
 
             btnLog.Click += BtnLog_Click;
@@ -137,62 +167,37 @@ namespace MiniGame
 
         private void 消耗()
         {
-            // 確保 UI 更新在主執行緒
-            if (InvokeRequired)
-            {
-                Invoke(new Action(消耗));
-                return;
-            }
-
             StringBuilder msg = new StringBuilder();
             characterManager.AllocateResourceAndRemoveCharacter(ref msg);
             sblog.AppendLine("【消耗回合】");
             sblog.AppendLine(msg.ToString());
-            UpdateAllyCount();
+            SetAllyCharacterUI();
             UpdateResourceCount();
-
-            currentRound += 1;
         }
 
         private void 生產()
-        {  // 確保 UI 更新在主執行緒
-            if (InvokeRequired)
-            {
-                Invoke(new Action(生產));
-                return;
-            }
+        {
             StringBuilder msg = new StringBuilder();
             characterManager.MakeAllCharactersWork(ref msg);
             sblog.AppendLine("【生產回合】");
             sblog.AppendLine(msg.ToString());
-            UpdateAllyCount();
+            MessageBox.Show(msg.ToString());
+            SetAllyCharacterUI();
             UpdateResourceCount();
-            currentRound += 1;
         }
 
         private void 打架()
         {
-            //battaleSystem.Fight(characterManager.GetAllInGameCharacters());
-            if (InvokeRequired)
-            {
-                Invoke(new Action(打架));
-                return;
-            }
-            foreach (var ally in characterManager.GetAllInGameCharacters().Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite))
-            {
-                lbAlly.Text = ally.AllyType.ToString();
-                foreach (var enemy in battaleSystem.Enemies.Where(e => !e.IsDead))
-                {
-                    lbEnemy.Text = enemy.EnemyType.ToString();
+            StringBuilder sbmsg = new StringBuilder();
+            sblog.AppendLine("【打架回合】");
+            battaleSystem.Fight(characterManager.GetAllInGameCharacters(), ref sbmsg);
+            sblog.AppendLine(sbmsg.ToString());
 
-                    if (ally.IsDead) continue;
-                    battaleSystem.Fight_1v1(ally, enemy);
-                    UpdateAllyCount();
-                }
-            }
-
+            SetAllyCharacterUI();
+            SetEnemyCharacterUI();
+            //重算空床
+            resourceManager.EmptyBeds = resourceManager.TotalBeds - characterManager.GetAllCharactersCount();
             UpdateResourceCount();
-            currentRound += 1;
         }
 
         private void 設定()
@@ -228,6 +233,7 @@ namespace MiniGame
                 text += "鬥";
             }
             lbAllyList.Text = text;
+            UpdateAllyCount();
         }
 
         private void SetEnemyCharacterUI()
@@ -239,6 +245,7 @@ namespace MiniGame
             }
 
             lbEnemyList.Text = text;
+            teEnemyCount.Text = battaleSystem.GetEnemyCount().ToString();
         }
 
         private void UpdateAllyCount()
@@ -252,7 +259,8 @@ namespace MiniGame
         private void UpdateResourceCount()
         {
             teFoodCount.Text = resourceManager.TotalFoods.ToString();
-            teBedCount.Text = resourceManager.EmptyBeds.ToString();
+            teEmptyBedCount.Text = resourceManager.EmptyBeds.ToString();
+            teTotalBed.Text = resourceManager.TotalBeds.ToString();
         }
     }
 }

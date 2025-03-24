@@ -11,30 +11,32 @@ namespace GameLogic
     {
         private ResourceManager _resourceManager;
 
-        public BehaviorSystem(ResourceManager resourceManager, CharacterManager characterManager)
-        {
-            _resourceManager = resourceManager;
-        }
-
         public BehaviorSystem(ResourceManager resourceManager)
         {
             _resourceManager = resourceManager;
         }
 
-        public void EatFood(AllyCharacter character)
+        public bool EatFood(AllyCharacter character, int times = 1)
         {
-            if (_resourceManager.TotalFoods >= character.Appetite)
+            if (_resourceManager.TotalFoods >= character.Appetite * times)
             {
                 character.EatFood();
-                _resourceManager.EatFood(character.Appetite);
+                _resourceManager.EatFood(character.Appetite * times);
+                return true;
             }
+            else return false;
         }
 
-        public void GetBed(AllyCharacter character)
+        public bool GetBed(AllyCharacter character)
         {
             if (_resourceManager.EmptyBeds >= character.BedCount)
             {
                 _resourceManager.AllocateBed(character.BedCount);
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -68,6 +70,7 @@ namespace GameLogic
 
         public bool CanAllCharactersEat(List<AllyCharacter> inGameCharacters, ref StringBuilder errSb)
         {
+            //先檢查是否需要移除角色，再進行消耗
             int exptectedMinFoodCount = 0;
             foreach (var ch in inGameCharacters)
             {
@@ -75,41 +78,40 @@ namespace GameLogic
             }
             if (_resourceManager.TotalFoods >= exptectedMinFoodCount)
             {
-                //eat
                 foreach (var ch in inGameCharacters)
                 {
-                    EatFood(ch);
+                    if (!EatFood(ch))
+                    {
+                        errSb.AppendLine("食物不夠");
+                        return false;
+                    }
                 }
-                return true;
             }
             else
             {
-                //remove character
                 errSb.AppendLine("食物不夠");
                 return false;
             }
+            return true;
         }
 
         public bool CanAllCharactersGetBed(List<AllyCharacter> inGameCharacters, ref StringBuilder errSb)
         {
+            //先檢查是否需要移除角色，再進行消耗
             int exptectedMinBedCount = 0;
             foreach (var ch in inGameCharacters)
             {
                 exptectedMinBedCount += ch.BedCount;
             }
-            if (_resourceManager.EmptyBeds >= exptectedMinBedCount)
+            //床位不用消耗，做檢查就好
+            if (_resourceManager.TotalBeds < exptectedMinBedCount)
             {
-                foreach (var ch in inGameCharacters)
-                {
-                    GetBed(ch);
-                }
-                return true;
+                errSb.AppendLine("床位不夠");
+                return false;
             }
             else
             {
-                //remove character
-                errSb.AppendLine("床位不夠");
-                return false;
+                return true;
             }
         }
 

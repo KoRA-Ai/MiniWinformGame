@@ -28,7 +28,7 @@ namespace GameLogic.BattleSystem
             }
         }
 
-        public void Fight(List<AllyCharacter> allies)
+        public void Fight(List<AllyCharacter> allies, ref StringBuilder msg)
         {
             Console.WriteLine("戰鬥開始");
             foreach (var ally in allies.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite))
@@ -36,31 +36,32 @@ namespace GameLogic.BattleSystem
                 foreach (var enemy in Enemies.Where(e => !e.IsDead))
                 {
                     if (ally.IsDead) continue;
-                    Fight_1v1(ally, enemy);
+                    Fight_1v1(ally, enemy, ref msg);
                 }
             }
         }
 
-        public void Fight_1v1(AllyCharacter ally, EnemyCharacter enemy)
+        public void Fight_1v1(AllyCharacter ally, EnemyCharacter enemy, ref StringBuilder msg)
         {
             Console.WriteLine("【" + ally.AllyType.ToString() + " vs " + enemy.EnemyType.ToString() + "】");
             while (!ally.IsDead && !enemy.IsDead)
             {
-                if (ally.AllyType == AllyTypes.Soldier && !ally.IsDead)
+                if (ally.AttackPower > 0 && !ally.IsDead && !enemy.IsDead)
                 {
                     enemy.TakeDamage(ally.AttackPower);
+                    if (enemy.IsDead) { msg.AppendLine("敵人-1"); }
                 }
                 if (!enemy.IsDead && !ally.IsDead)
                 {
                     ally.TakeDamage(enemy.AttackPower);
+                    if (ally.IsDead) { msg.AppendLine(ally.AllyType.ToString() + " -1"); }
                 }
-                System.Threading.Thread.Sleep(2000);
             }
         }
 
         public int GetEnemyCount()
         {
-            return Enemies.Count();
+            return Enemies.Where(a => !a.IsDead).Count();
         }
     }
 }
