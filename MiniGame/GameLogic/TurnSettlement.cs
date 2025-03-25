@@ -19,11 +19,20 @@ namespace GameLogic
             {
                 return false;
             }
+
             //if (battleSystem.GetEnemyCount() == 0)
             //{
-            //    return (false, true);
+            //    return true ;
             //}
             return true;
+        }
+
+        public void ReassignCharacters(CharacterManager characterManager, BattleSystem.BattleSystem battleSystem, ref StringBuilder sbmsg)
+        {
+            if (characterManager.GetAllCharactersCount() > battleSystem.GetEnemyCount())
+            {
+                characterManager.RemoveCharacter_ForRoundEnd(ref sbmsg);
+            }
         }
     }
 }

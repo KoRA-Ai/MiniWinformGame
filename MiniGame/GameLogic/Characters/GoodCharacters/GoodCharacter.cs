@@ -12,9 +12,10 @@ namespace GameLogic.Characters
         public PositionTypes PositionType { get; protected set; }
         public int Appetite { get; protected set; }
         public int BedCount { get; protected set; }
+        public bool CanAttack { get; set; } = true;
         public List<Work> Works { get; protected set; }
 
-        public GoodCharacter() : base(CharacterTypes.Ally)
+        public GoodCharacter() : base(CharacterTypes.character)
         {
         }
 

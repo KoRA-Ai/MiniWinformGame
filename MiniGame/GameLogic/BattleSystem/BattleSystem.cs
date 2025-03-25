@@ -28,33 +28,43 @@ namespace GameLogic.BattleSystem
             }
         }
 
-        public void Fight(List<GoodCharacter> allies, ref StringBuilder msg)
+        public void Fight(List<GoodCharacter> characters, ref StringBuilder msg)
         {
             Console.WriteLine("戰鬥開始");
-            foreach (var ally in allies.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite))
+            int aIndex = 1;
+            int eIndex = 0;
+            foreach (var character in characters.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite))
             {
                 foreach (var enemy in Enemies.Where(e => !e.IsDead))
                 {
-                    if (ally.IsDead) continue;
-                    Fight_1v1(ally, enemy, ref msg);
+                    if (character.IsDead) continue;
+                    msg.AppendLine("【" + character.PositionType.ToString() + aIndex + " vs " + enemy.EnemyType.ToString() + eIndex + "】");
+                    Fight_1v1(character, enemy, ref msg);
+
+                    eIndex++;
                 }
+                aIndex++;
             }
         }
 
-        public void Fight_1v1(GoodCharacter ally, EnemyCharacter enemy, ref StringBuilder msg)
+        public void Fight_1v1(GoodCharacter character, EnemyCharacter enemy, ref StringBuilder msg)
         {
-            Console.WriteLine("【" + ally.PositionType.ToString() + " vs " + enemy.EnemyType.ToString() + "】");
-            while (!ally.IsDead && !enemy.IsDead)
+            while (!character.IsDead && !enemy.IsDead)
             {
-                if (ally.AttackPower > 0 && !ally.IsDead && !enemy.IsDead)
+                //如果角色打死一個人就不能再打架了
+                if (character.AttackPower > 0 && !character.IsDead && !enemy.IsDead && character.CanAttack)
                 {
-                    enemy.TakeDamage(ally.AttackPower);
-                    if (enemy.IsDead) { msg.AppendLine("敵人-1"); }
+                    enemy.TakeDamage(character.AttackPower);
+                    if (enemy.IsDead)
+                    {
+                        msg.AppendLine("敵人-1");
+                        character.CanAttack = false;
+                    }
                 }
-                if (!enemy.IsDead && !ally.IsDead)
+                if (!enemy.IsDead && !character.IsDead)
                 {
-                    ally.TakeDamage(enemy.AttackPower);
-                    if (ally.IsDead) { msg.AppendLine(ally.PositionType.ToString() + " -1"); }
+                    character.TakeDamage(enemy.AttackPower);
+                    if (character.IsDead) { msg.AppendLine(character.PositionType.ToString() + " -1"); }
                 }
             }
         }

@@ -36,7 +36,7 @@ namespace Characters
 
         public enum CharacterTypes
         {
-            Ally, Enemy
+            character, Enemy
         }
     }
 }

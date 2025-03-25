@@ -11,7 +11,7 @@ namespace Characters
             this.PositionType = PositionTypes.Soldier;
             this.Appetite = 3;
             this.BedCount = 1;
-            this.Hp = 50;
+            this.Hp = 40;
             this.AttackPower = 20;
             this.Works = new List<Work>
             {

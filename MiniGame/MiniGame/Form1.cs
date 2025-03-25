@@ -27,55 +27,26 @@ namespace MiniGame
 
         private int currentRound = 0;
 
-        public Form1(GameConfiguration initConfiguration = null)
+        public Form1(GameConfiguration configuration = null, CharacterManager cManager = null)
         {
             InitializeComponent();
 
             lbAllyList.Text = lbEnemyList.Text = string.Empty;
             btnEndRound.Enabled = false;
-            if (initConfiguration == null)
+            if (configuration == null)
                 initConfiguration = new GameConfiguration(5, 100, 10, 5);
+            else
+                initConfiguration = configuration;
             resourceManager = new ResourceManager(initConfiguration);
-            characterManager = new CharacterManager(initConfiguration, resourceManager);
+            if (cManager == null)
+                characterManager = new CharacterManager(initConfiguration, resourceManager);
+            else
+                characterManager = cManager;
             battaleSystem = new BattleSystem(initConfiguration.InitialEnemyCount);
             SetEnemyCharacterUI();
             UpdateResourceCount();
 
-            foreach (GoodCharacter.PositionTypes value in Enum.GetValues(typeof(GoodCharacter.PositionTypes)))
-            {
-                Button button = new Button();
-                button.Name = "btnRecruit" + value.ToString();
-                button.Text = value.ToString();
-                button.BackColor = Color.White;
-                button.Size = new System.Drawing.Size(100, 60);
-
-                button.Click += (s, e) =>
-                {
-                    btnEndRound.Enabled = true;
-
-                    if (currentRound != 1)
-                    {
-                        currentRound = 1;
-                        lbNowRound.Text = "僱用角色";
-                    }
-                    var result = characterManager.HireCharacter(value);
-                    if (!result.isSuccessed)
-                    {
-                        MessageBox.Show(result.err);
-                    }
-                    sblog.AppendLine(result.err);
-
-                    SetGoodCharacterUI();
-                    UpdateResourceCount();
-
-                    //一旦招募就將設定關起來
-                    if (characterManager.GetAllCharactersCount() > 0)
-                    {
-                        btnSetting.Enabled = false;
-                    }
-                };
-                pnlRecruitCharacters.Controls.Add(button);
-            }
+            僱用();
 
             btnSetting.Click += (s, e) => { 設定(); };
             btnEndRound.Click += async (s, e) =>
@@ -136,8 +107,10 @@ namespace MiniGame
                         {
                             MessageBox.Show("遊戲結束 - 我方勝利");
                             MessageBox.Show("將開始新回合");
-                            Form1 form1 = new Form1();
-                            //1:1消耗
+                            StringBuilder sbmsg = new StringBuilder();
+                            turnSettlement.ReassignCharacters(characterManager, battaleSystem, ref sbmsg);
+                            sblog.AppendLine(sbmsg.ToString());
+                            Form1 form1 = new Form1(new GameConfiguration(5, 100, 10, 5), characterManager);
                             form1.Show();
                         }
                         else
@@ -145,7 +118,7 @@ namespace MiniGame
                             MessageBox.Show("遊戲結束 - 我方失敗");
                             MessageBox.Show("將開始新回合");
                             initConfiguration = new GameConfiguration(5 + battaleSystem.GetEnemyCount(), 100, 10, 5);
-                            Form1 form1 = new Form1(initConfiguration);
+                            Form1 form1 = new Form1(initConfiguration, null);
                             form1.Show();
                             return;
                         }
@@ -163,6 +136,45 @@ namespace MiniGame
         {
             FormLog form = new FormLog(sblog.ToString());
             form.ShowDialog();
+        }
+
+        private void 僱用()
+        {
+            foreach (GoodCharacter.PositionTypes value in Enum.GetValues(typeof(GoodCharacter.PositionTypes)))
+            {
+                Button button = new Button();
+                button.Name = "btnRecruit" + value.ToString();
+                button.Text = value.ToString();
+                button.BackColor = Color.White;
+                button.Size = new System.Drawing.Size(100, 60);
+
+                button.Click += (s, e) =>
+                {
+                    btnEndRound.Enabled = true;
+
+                    if (currentRound != 1)
+                    {
+                        currentRound = 1;
+                        lbNowRound.Text = "僱用角色";
+                    }
+                    var result = characterManager.HireCharacter(value);
+                    if (!result.isSuccessed)
+                    {
+                        MessageBox.Show(result.err);
+                    }
+                    sblog.AppendLine(result.err);
+
+                    SetGoodCharacterUI();
+                    UpdateResourceCount();
+
+                    //一旦招募就將設定關起來
+                    if (characterManager.GetAllCharactersCount() > 0)
+                    {
+                        btnSetting.Enabled = false;
+                    }
+                };
+                pnlRecruitCharacters.Controls.Add(button);
+            }
         }
 
         private void 消耗()

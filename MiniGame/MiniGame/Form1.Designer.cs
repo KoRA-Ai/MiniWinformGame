@@ -144,7 +144,7 @@
             this.lbAllyList.Name = "lbAllyList";
             this.lbAllyList.Size = new System.Drawing.Size(442, 124);
             this.lbAllyList.TabIndex = 15;
-            this.lbAllyList.Text = "ally";
+            this.lbAllyList.Text = "character";
             this.lbAllyList.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lbEnemyList

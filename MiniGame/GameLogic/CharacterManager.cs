@@ -39,7 +39,7 @@ namespace GameLogic
 
         public (bool isSuccessed, string err) CheckHireRules(GoodCharacter character)
         {
-            if (_InGameCharacters.Count >= MaxCharacterCount)
+            if (InGameCharacters.Count >= MaxCharacterCount)
             {
                 return (false, "超過場上人數上限");
             }
@@ -110,7 +110,7 @@ namespace GameLogic
 
         public void RemoveCharacter_Food(ref StringBuilder errMsg)
         {
-            //根據食量大小移除角色
+            //根據食量大小移除角色 士兵→建築師→農夫
             var list = InGameCharacters.OrderByDescending(c => c.Appetite);
             if (list.Count() > 0)
                 RemoveCharacter(list.First(), ref errMsg);
@@ -130,6 +130,26 @@ namespace GameLogic
             else if (GetSoldiersCount() != 0)
             {
                 RemoveCharacter(InGameCharacters.Where(c => c.PositionType == PositionTypes.Soldier).First(), ref errMsg);
+            }
+        }
+
+        /// <summary>
+        /// 回合結束的人員調整
+        /// </summary>
+        public void RemoveCharacter_ForRoundEnd(ref StringBuilder errMsg)
+        {
+            //裁減 士兵→農夫→建築師
+            if (GetSoldiersCount() != 0)
+            {
+                RemoveCharacter(InGameCharacters.Where(c => c.PositionType == PositionTypes.Soldier).First(), ref errMsg);
+            }
+            else if (GetFarmersCount() != 0)
+            {
+                RemoveCharacter(InGameCharacters.Where(c => c.PositionType == PositionTypes.Farmer).First(), ref errMsg);
+            }
+            else if (GetBuildersCount() != 0)
+            {
+                RemoveCharacter(InGameCharacters.Where(c => c.PositionType == PositionTypes.Builder).First(), ref errMsg);
             }
         }
 
