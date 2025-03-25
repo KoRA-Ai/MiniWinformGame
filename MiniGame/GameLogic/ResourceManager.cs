@@ -34,7 +34,7 @@ namespace GameLogic.ResourceManagement
             EmptyBeds -= neededBedCount;
         }
 
-        public void MakeResource(AllyCharacter character)
+        public void MakeResource(GoodCharacter character)
         {
             character.Work();
         }

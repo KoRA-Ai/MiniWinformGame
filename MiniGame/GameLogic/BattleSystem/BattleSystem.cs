@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static GameLogic.Characters.AllyCharacter;
+using static GameLogic.Characters.GoodCharacter;
 
 namespace GameLogic.BattleSystem
 {
@@ -28,7 +28,7 @@ namespace GameLogic.BattleSystem
             }
         }
 
-        public void Fight(List<AllyCharacter> allies, ref StringBuilder msg)
+        public void Fight(List<GoodCharacter> allies, ref StringBuilder msg)
         {
             Console.WriteLine("戰鬥開始");
             foreach (var ally in allies.Where(a => !a.IsDead).OrderByDescending(a => a.AttackPower).ThenByDescending(a => a.Appetite))
@@ -41,9 +41,9 @@ namespace GameLogic.BattleSystem
             }
         }
 
-        public void Fight_1v1(AllyCharacter ally, EnemyCharacter enemy, ref StringBuilder msg)
+        public void Fight_1v1(GoodCharacter ally, EnemyCharacter enemy, ref StringBuilder msg)
         {
-            Console.WriteLine("【" + ally.AllyType.ToString() + " vs " + enemy.EnemyType.ToString() + "】");
+            Console.WriteLine("【" + ally.PositionType.ToString() + " vs " + enemy.EnemyType.ToString() + "】");
             while (!ally.IsDead && !enemy.IsDead)
             {
                 if (ally.AttackPower > 0 && !ally.IsDead && !enemy.IsDead)
@@ -54,7 +54,7 @@ namespace GameLogic.BattleSystem
                 if (!enemy.IsDead && !ally.IsDead)
                 {
                     ally.TakeDamage(enemy.AttackPower);
-                    if (ally.IsDead) { msg.AppendLine(ally.AllyType.ToString() + " -1"); }
+                    if (ally.IsDead) { msg.AppendLine(ally.PositionType.ToString() + " -1"); }
                 }
             }
         }

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace GameLogic.Characters
 {
-    public abstract class AllyCharacter : BaseCharacter
+    public abstract class GoodCharacter : BaseCharacter
     {
-        public AllyTypes AllyType { get; protected set; }
+        public PositionTypes PositionType { get; protected set; }
         public int Appetite { get; protected set; }
         public int BedCount { get; protected set; }
         public List<Work> Works { get; protected set; }
 
-        public AllyCharacter() : base(CharacterTypes.Ally)
+        public GoodCharacter() : base(CharacterTypes.Ally)
         {
         }
 
@@ -25,10 +25,10 @@ namespace GameLogic.Characters
         public override void TakeDamage(int damage)
         {
             base.TakeDamage(damage);
-            Console.WriteLine(this.AllyType.ToString() + "受傷害 -" + damage + " HP: " + this.Hp);
+            Console.WriteLine(this.PositionType.ToString() + "受傷害 -" + damage + " HP: " + this.Hp);
         }
 
-        public enum AllyTypes
+        public enum PositionTypes
         {
             Farmer, Builder, Soldier
         }

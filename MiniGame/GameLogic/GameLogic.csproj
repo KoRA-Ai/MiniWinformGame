@@ -42,11 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BattleSystem\BattleSystem.cs" />
-    <Compile Include="Characters\AllyCharacters\AllyCharacter.cs" />
+    <Compile Include="Characters\GoodCharacters\GoodCharacter.cs" />
     <Compile Include="Characters\BaseCharacter.cs" />
-    <Compile Include="Characters\AllyCharacters\Builder.cs" />
-    <Compile Include="Characters\AllyCharacters\Soldier.cs" />
-    <Compile Include="Characters\AllyCharacters\Farmer.cs" />
+    <Compile Include="Characters\GoodCharacters\Builder.cs" />
+    <Compile Include="Characters\GoodCharacters\Soldier.cs" />
+    <Compile Include="Characters\GoodCharacters\Farmer.cs" />
     <Compile Include="Characters\EnemyCharacters\Enemy01.cs" />
     <Compile Include="Characters\EnemyCharacters\EnemyCharacter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

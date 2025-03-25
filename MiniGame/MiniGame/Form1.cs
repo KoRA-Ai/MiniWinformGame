@@ -41,7 +41,7 @@ namespace MiniGame
             SetEnemyCharacterUI();
             UpdateResourceCount();
 
-            foreach (AllyCharacter.AllyTypes value in Enum.GetValues(typeof(AllyCharacter.AllyTypes)))
+            foreach (GoodCharacter.PositionTypes value in Enum.GetValues(typeof(GoodCharacter.PositionTypes)))
             {
                 Button button = new Button();
                 button.Name = "btnRecruit" + value.ToString();
@@ -65,7 +65,7 @@ namespace MiniGame
                     }
                     sblog.AppendLine(result.err);
 
-                    SetAllyCharacterUI();
+                    SetGoodCharacterUI();
                     UpdateResourceCount();
 
                     //一旦招募就將設定關起來
@@ -171,7 +171,7 @@ namespace MiniGame
             characterManager.AllocateResourceAndRemoveCharacter(ref msg);
             sblog.AppendLine("【消耗回合】");
             sblog.AppendLine(msg.ToString());
-            SetAllyCharacterUI();
+            SetGoodCharacterUI();
             UpdateResourceCount();
         }
 
@@ -182,7 +182,7 @@ namespace MiniGame
             sblog.AppendLine("【生產回合】");
             sblog.AppendLine(msg.ToString());
             MessageBox.Show(msg.ToString());
-            SetAllyCharacterUI();
+            SetGoodCharacterUI();
             UpdateResourceCount();
         }
 
@@ -193,7 +193,7 @@ namespace MiniGame
             battaleSystem.Fight(characterManager.GetAllInGameCharacters(), ref sbmsg);
             sblog.AppendLine(sbmsg.ToString());
 
-            SetAllyCharacterUI();
+            SetGoodCharacterUI();
             SetEnemyCharacterUI();
             //重算空床
             resourceManager.EmptyBeds = resourceManager.TotalBeds - characterManager.GetAllCharactersCount();
@@ -217,7 +217,7 @@ namespace MiniGame
             };
         }
 
-        private void SetAllyCharacterUI()
+        private void SetGoodCharacterUI()
         {
             string text = string.Empty;
             for (int i = 0; i < characterManager.GetFarmersCount(); i++)

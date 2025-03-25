@@ -4,11 +4,11 @@ using static GameLogic.Characters.Work;
 
 namespace Characters
 {
-    public class Builder : AllyCharacter
+    public class Builder : GoodCharacter
     {
         public Builder()
         {
-            this.AllyType = AllyTypes.Builder;
+            this.PositionType = PositionTypes.Builder;
             this.Appetite = 2;
             this.BedCount = 1;
             this.Hp = 10;

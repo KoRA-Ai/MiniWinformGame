@@ -16,7 +16,7 @@ namespace GameLogic
             _resourceManager = resourceManager;
         }
 
-        public bool EatFood(AllyCharacter character, int times = 1)
+        public bool EatFood(GoodCharacter character, int times = 1)
         {
             if (_resourceManager.TotalFoods >= character.Appetite * times)
             {
@@ -27,7 +27,7 @@ namespace GameLogic
             else return false;
         }
 
-        public bool GetBed(AllyCharacter character)
+        public bool GetBed(GoodCharacter character)
         {
             if (_resourceManager.EmptyBeds >= character.BedCount)
             {
@@ -46,7 +46,7 @@ namespace GameLogic
         /// <param name="workType">工作類型</param>
         /// <param name="count">工作量</param>
         /// <param name="turn">回合數</param>
-        public void Work(AllyCharacter character)
+        public void Work(GoodCharacter character)
         {
             foreach (var work in character.Works)
             {
@@ -68,7 +68,7 @@ namespace GameLogic
             }
         }
 
-        public bool CanAllCharactersEat(List<AllyCharacter> inGameCharacters, ref StringBuilder errSb)
+        public bool CanAllCharactersEat(List<GoodCharacter> inGameCharacters, ref StringBuilder errSb)
         {
             //先檢查是否需要移除角色，再進行消耗
             int exptectedMinFoodCount = 0;
@@ -95,7 +95,7 @@ namespace GameLogic
             return true;
         }
 
-        public bool CanAllCharactersGetBed(List<AllyCharacter> inGameCharacters, ref StringBuilder errSb)
+        public bool CanAllCharactersGetBed(List<GoodCharacter> inGameCharacters, ref StringBuilder errSb)
         {
             //先檢查是否需要移除角色，再進行消耗
             int exptectedMinBedCount = 0;
@@ -115,7 +115,7 @@ namespace GameLogic
             }
         }
 
-        public void MakeAllCharactersWork(List<AllyCharacter> inGameCharacters)
+        public void MakeAllCharactersWork(List<GoodCharacter> inGameCharacters)
         {
             foreach (var ch in inGameCharacters)
             {

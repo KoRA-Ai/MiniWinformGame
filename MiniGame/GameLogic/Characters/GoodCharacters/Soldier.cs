@@ -4,17 +4,18 @@ using static GameLogic.Characters.Work;
 
 namespace Characters
 {
-    public class Farmer : AllyCharacter
+    public class Soldier : GoodCharacter
     {
-        public Farmer()
+        public Soldier()
         {
-            this.AllyType = AllyTypes.Farmer;
-            this.Appetite = 1;
+            this.PositionType = PositionTypes.Soldier;
+            this.Appetite = 3;
             this.BedCount = 1;
-            this.Hp = 10;
-            this.AttackPower = 0;
-            this.Works = new List<Work> {
-                new Work(WorkType.MakeFood,3,1)
+            this.Hp = 50;
+            this.AttackPower = 20;
+            this.Works = new List<Work>
+            {
+                //new Work(WorkType.Fight,1,1)
             };
         }
 

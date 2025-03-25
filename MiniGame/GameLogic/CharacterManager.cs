@@ -6,15 +6,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using static GameLogic.Characters.AllyCharacter;
+using static GameLogic.Characters.GoodCharacter;
 
 namespace GameLogic
 {
     public class CharacterManager//增減角色
     {
-        private List<AllyCharacter> _InGameCharacters;
+        private List<GoodCharacter> _InGameCharacters;
 
-        private List<AllyCharacter> InGameCharacters
+        private List<GoodCharacter> InGameCharacters
         {
             get { return _InGameCharacters.Where(a => !a.IsDead).ToList(); }
             set
@@ -30,14 +30,14 @@ namespace GameLogic
         public CharacterManager(GameConfiguration configuration, ResourceManager resourceManager)
         {
             this.MaxCharacterCount = configuration.MaxCharacterCount;
-            _InGameCharacters = new List<AllyCharacter>();
+            _InGameCharacters = new List<GoodCharacter>();
             _resourceManager = resourceManager;
             _behaviorSystem = new BehaviorSystem(resourceManager);
         }
 
         #region 增減角色
 
-        public (bool isSuccessed, string err) CheckHireRules(AllyCharacter character)
+        public (bool isSuccessed, string err) CheckHireRules(GoodCharacter character)
         {
             if (_InGameCharacters.Count >= MaxCharacterCount)
             {
@@ -60,7 +60,7 @@ namespace GameLogic
             return (true, "驗鄭成功");
         }
 
-        public void HireCharacter(AllyCharacter character, ref StringBuilder errMsg)
+        public void HireCharacter(GoodCharacter character, ref StringBuilder errMsg)
         {
             var result = CheckHireRules(character);
             if (result.isSuccessed)
@@ -69,7 +69,7 @@ namespace GameLogic
                 bool eatOK = _behaviorSystem.EatFood(character, 2);
                 bool bedOK = _behaviorSystem.GetBed(character);
                 MaxCharacterCount++;
-                errMsg.AppendLine("Add " + character.AllyType.ToString() + ", 剩餘食物: " + _resourceManager.TotalFoods);
+                errMsg.AppendLine("Add " + character.PositionType.ToString() + ", 剩餘食物: " + _resourceManager.TotalFoods);
             }
             else
             {
@@ -77,20 +77,20 @@ namespace GameLogic
             }
         }
 
-        public (bool isSuccessed, string err) HireCharacter(AllyTypes allyType)
+        public (bool isSuccessed, string err) HireCharacter(PositionTypes PositionType)
         {
-            AllyCharacter character;
-            switch (allyType)
+            GoodCharacter character;
+            switch (PositionType)
             {
-                case AllyTypes.Farmer:
+                case PositionTypes.Farmer:
                     character = new Farmer();
                     break;
 
-                case AllyTypes.Builder:
+                case PositionTypes.Builder:
                     character = new Builder();
                     break;
 
-                case AllyTypes.Soldier:
+                case PositionTypes.Soldier:
                     character = new Soldier();
                     break;
 
@@ -121,24 +121,24 @@ namespace GameLogic
             //裁減 農夫→建築師→士兵
             if (GetFarmersCount() != 0)
             {
-                RemoveCharacter(InGameCharacters.Where(c => c.AllyType == AllyTypes.Farmer).First(), ref errMsg);
+                RemoveCharacter(InGameCharacters.Where(c => c.PositionType == PositionTypes.Farmer).First(), ref errMsg);
             }
             else if (GetBuildersCount() != 0)
             {
-                RemoveCharacter(InGameCharacters.Where(c => c.AllyType == AllyTypes.Builder).First(), ref errMsg);
+                RemoveCharacter(InGameCharacters.Where(c => c.PositionType == PositionTypes.Builder).First(), ref errMsg);
             }
             else if (GetSoldiersCount() != 0)
             {
-                RemoveCharacter(InGameCharacters.Where(c => c.AllyType == AllyTypes.Soldier).First(), ref errMsg);
+                RemoveCharacter(InGameCharacters.Where(c => c.PositionType == PositionTypes.Soldier).First(), ref errMsg);
             }
         }
 
-        public void RemoveCharacter(AllyCharacter character, ref StringBuilder errMsg)
+        public void RemoveCharacter(GoodCharacter character, ref StringBuilder errMsg)
         {
             bool canRemove = true;
-            switch (character.AllyType)
+            switch (character.PositionType)
             {
-                case AllyTypes.Farmer:
+                case PositionTypes.Farmer:
                     if (GetFarmersCount() == 0)
                     {
                         errMsg.AppendLine("場上已無Farmer 可移除");
@@ -146,7 +146,7 @@ namespace GameLogic
                     }
                     break;
 
-                case AllyTypes.Builder:
+                case PositionTypes.Builder:
                     if (GetBuildersCount() == 0)
                     {
                         errMsg.AppendLine("場上已無Builder 可移除");
@@ -154,7 +154,7 @@ namespace GameLogic
                     }
                     break;
 
-                case AllyTypes.Soldier:
+                case PositionTypes.Soldier:
                     if (GetSoldiersCount() == 0)
                     {
                         errMsg.AppendLine("場上已無Soldier 可移除");
@@ -166,7 +166,7 @@ namespace GameLogic
             {
                 _InGameCharacters.Remove(character);
                 MaxCharacterCount--;
-                errMsg.AppendLine("移除" + character.AllyType.ToString());
+                errMsg.AppendLine("移除" + character.PositionType.ToString());
             }
         }
 
@@ -217,7 +217,7 @@ namespace GameLogic
 
         #endregion 角色行為
 
-        public List<AllyCharacter> GetAllInGameCharacters()
+        public List<GoodCharacter> GetAllInGameCharacters()
         {
             return InGameCharacters;
         }
@@ -229,17 +229,17 @@ namespace GameLogic
 
         public int GetFarmersCount()
         {
-            return InGameCharacters.Where(a => a.AllyType == AllyTypes.Farmer).Count();
+            return InGameCharacters.Where(a => a.PositionType == PositionTypes.Farmer).Count();
         }
 
         public int GetBuildersCount()
         {
-            return InGameCharacters.Where(a => a.AllyType == AllyTypes.Builder).Count();
+            return InGameCharacters.Where(a => a.PositionType == PositionTypes.Builder).Count();
         }
 
         public int GetSoldiersCount()
         {
-            return InGameCharacters.Where(a => a.AllyType == AllyTypes.Soldier).Count();
+            return InGameCharacters.Where(a => a.PositionType == PositionTypes.Soldier).Count();
         }
 
         public void GetCurrentCharacterStatus()
